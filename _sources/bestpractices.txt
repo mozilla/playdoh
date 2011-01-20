@@ -1,0 +1,42 @@
+.. _bestpractices:
+
+==============
+Best Practices
+==============
+
+This page lists several best practices for writing secure web applications
+with playdoh.
+
+
+``|safe`` considered harmful
+----------------------------
+
+Using something like ``mystring|safe`` in a template will prevent Jinja2 from
+auto-escaping it. Sadly, this requires us to be really sure that ``mystring``
+is not raw, user-entered data. Otherwise we introduce an XSS vulnerability.
+
+``|safe`` is safe to use in cases where, for example, you have a localized
+string that contains some HTML::
+
+    {{ _('Welcome to <strong>playdoh</strong>!')|safe }}
+
+When you *interpolate* data into such a string, do not use ``|f(...)|safe``.
+The data could be unsafe. Instead, use the helper ``|fe(...)``. It will
+escape all its arguments before doing string interpolation, before returning
+HTML that's safe to use::
+
+    {{ _('Welcome back, <strong>{username}</strong>!')|fe(username=user.display_name) }}
+
+**A note on form fields:** Jinja2, unlike Django templates, by default does
+not consider Django forms "safe" to display. Thus, you'd use::
+
+    {{ form.myfield|safe }}
+
+In order to minimize the use of ``|safe`` (and thus possible unsafe uses of
+it), playdoh monkey-patches the Django forms framework so that form fields'
+HTML representation is considered safe by Jinja2 as well.
+
+
+Mmmmh, Cookies
+--------------
+Om nom nom. Also: Issue 3.

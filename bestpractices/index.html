@@ -1,0 +1,147 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Best Practices &mdash; playdoh v1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="playdoh v1.0 documentation" href="../" />
+    <link rel="next" title="L10n Setup" href="../l10n_setup/" />
+    <link rel="prev" title="Libraries" href="../libs/" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../l10n_setup/" title="L10n Setup"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../libs/" title="Libraries"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../">playdoh v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="best-practices">
+<span id="bestpractices"></span><h1>Best Practices<a class="headerlink" href="#best-practices" title="Permalink to this headline">¶</a></h1>
+<p>This page lists several best practices for writing secure web applications
+with playdoh.</p>
+<div class="section" id="safe-considered-harmful">
+<h2><tt class="docutils literal"><span class="pre">|safe</span></tt> considered harmful<a class="headerlink" href="#safe-considered-harmful" title="Permalink to this headline">¶</a></h2>
+<p>Using something like <tt class="docutils literal"><span class="pre">mystring|safe</span></tt> in a template will prevent Jinja2 from
+auto-escaping it. Sadly, this requires us to be really sure that <tt class="docutils literal"><span class="pre">mystring</span></tt>
+is not raw, user-entered data. Otherwise we introduce an XSS vulnerability.</p>
+<p><tt class="docutils literal"><span class="pre">|safe</span></tt> is safe to use in cases where, for example, you have a localized
+string that contains some HTML:</p>
+<div class="highlight-python"><pre>{{ _('Welcome to &lt;strong&gt;playdoh&lt;/strong&gt;!')|safe }}</pre>
+</div>
+<p>When you <em>interpolate</em> data into such a string, do not use <tt class="docutils literal"><span class="pre">|f(...)|safe</span></tt>.
+The data could be unsafe. Instead, use the helper <tt class="docutils literal"><span class="pre">|fe(...)</span></tt>. It will
+escape all its arguments before doing string interpolation, before returning
+HTML that&#8217;s safe to use:</p>
+<div class="highlight-python"><pre>{{ _('Welcome back, &lt;strong&gt;{username}&lt;/strong&gt;!')|fe(username=user.display_name) }}</pre>
+</div>
+<p><strong>A note on form fields:</strong> Jinja2, unlike Django templates, by default does
+not consider Django forms &#8220;safe&#8221; to display. Thus, you&#8217;d use:</p>
+<div class="highlight-python"><pre>{{ form.myfield|safe }}</pre>
+</div>
+<p>In order to minimize the use of <tt class="docutils literal"><span class="pre">|safe</span></tt> (and thus possible unsafe uses of
+it), playdoh monkey-patches the Django forms framework so that form fields&#8217;
+HTML representation is considered safe by Jinja2 as well.</p>
+</div>
+<div class="section" id="mmmmh-cookies">
+<h2>Mmmmh, Cookies<a class="headerlink" href="#mmmmh-cookies" title="Permalink to this headline">¶</a></h2>
+<p>Om nom nom. Also: Issue 3.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Best Practices</a><ul>
+<li><a class="reference internal" href="#safe-considered-harmful"><tt class="docutils literal"><span class="pre">|safe</span></tt> considered harmful</a></li>
+<li><a class="reference internal" href="#mmmmh-cookies">Mmmmh, Cookies</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../libs/"
+                        title="previous chapter">Libraries</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../l10n_setup/"
+                        title="next chapter">L10n Setup</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/bestpractices.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search/" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../l10n_setup/" title="L10n Setup"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../libs/" title="Libraries"
+             >previous</a> |</li>
+        <li><a href="../">playdoh v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Mozilla.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.6.
+    </div>
+  </body>
+</html>
