@@ -61,19 +61,32 @@ is not raw, user-entered data. Otherwise we introduce an XSS vulnerability.</p>
 string that contains some HTML:</p>
 <div class="highlight-python"><pre>{{ _('Welcome to &lt;strong&gt;playdoh&lt;/strong&gt;!')|safe }}</pre>
 </div>
+<div class="section" id="string-interpolation">
+<h3>String interpolation<a class="headerlink" href="#string-interpolation" title="Permalink to this headline">¶</a></h3>
 <p>When you <em>interpolate</em> data into such a string, do not use <tt class="docutils literal"><span class="pre">|f(...)|safe</span></tt>.
 The data could be unsafe. Instead, use the helper <tt class="docutils literal"><span class="pre">|fe(...)</span></tt>. It will
-escape all its arguments before doing string interpolation, before returning
+escape all its arguments before doing string interpolation, then return
 HTML that&#8217;s safe to use:</p>
 <div class="highlight-python"><pre>{{ _('Welcome back, &lt;strong&gt;{username}&lt;/strong&gt;!')|fe(username=user.display_name) }}</pre>
 </div>
-<p><strong>A note on form fields:</strong> Jinja2, unlike Django templates, by default does
-not consider Django forms &#8220;safe&#8221; to display. Thus, you&#8217;d use:</p>
-<div class="highlight-python"><pre>{{ form.myfield|safe }}</pre>
+<p><tt class="docutils literal"><span class="pre">|f(...)|safe</span></tt> is to be considered unsafe and should not pass code review.</p>
+<p>If you interpolate into a base string that does <em>not contain HTML</em>, you may
+keep on using <tt class="docutils literal"><span class="pre">|f(...)</span></tt> without <tt class="docutils literal"><span class="pre">|safe</span></tt>, of course, as it will be
+auto-escaped on output:</p>
+<div class="highlight-python"><pre>{{ _('Author name: {author}')|f(author=user.display_name) }}</pre>
 </div>
+</div>
+<div class="section" id="form-fields">
+<h3>Form fields<a class="headerlink" href="#form-fields" title="Permalink to this headline">¶</a></h3>
+<p>Jinja2, unlike Django templates, by default does not consider Django forms
+&#8220;safe&#8221; to display. Thus, you&#8217;d use something like <tt class="docutils literal"><span class="pre">{{</span> <span class="pre">form.myfield|safe</span> <span class="pre">}}</span></tt>.</p>
 <p>In order to minimize the use of <tt class="docutils literal"><span class="pre">|safe</span></tt> (and thus possible unsafe uses of
 it), playdoh monkey-patches the Django forms framework so that form fields&#8217;
-HTML representation is considered safe by Jinja2 as well.</p>
+HTML representations are considered safe by Jinja2 as well. Therefore, the
+following works as expected:</p>
+<div class="highlight-python"><pre>{{ form.myfield }}</pre>
+</div>
+</div>
 </div>
 <div class="section" id="mmmmh-cookies">
 <h2>Mmmmh, Cookies<a class="headerlink" href="#mmmmh-cookies" title="Permalink to this headline">¶</a></h2>
@@ -90,7 +103,11 @@ HTML representation is considered safe by Jinja2 as well.</p>
   <h3><a href="../">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Best Practices</a><ul>
-<li><a class="reference internal" href="#safe-considered-harmful"><tt class="docutils literal"><span class="pre">|safe</span></tt> considered harmful</a></li>
+<li><a class="reference internal" href="#safe-considered-harmful"><tt class="docutils literal"><span class="pre">|safe</span></tt> considered harmful</a><ul>
+<li><a class="reference internal" href="#string-interpolation">String interpolation</a></li>
+<li><a class="reference internal" href="#form-fields">Form fields</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#mmmmh-cookies">Mmmmh, Cookies</a></li>
 </ul>
 </li>

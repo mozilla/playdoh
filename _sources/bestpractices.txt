@@ -20,21 +20,37 @@ string that contains some HTML::
 
     {{ _('Welcome to <strong>playdoh</strong>!')|safe }}
 
+
+String interpolation
+~~~~~~~~~~~~~~~~~~~~
+
 When you *interpolate* data into such a string, do not use ``|f(...)|safe``.
 The data could be unsafe. Instead, use the helper ``|fe(...)``. It will
-escape all its arguments before doing string interpolation, before returning
+escape all its arguments before doing string interpolation, then return
 HTML that's safe to use::
 
     {{ _('Welcome back, <strong>{username}</strong>!')|fe(username=user.display_name) }}
 
-**A note on form fields:** Jinja2, unlike Django templates, by default does
-not consider Django forms "safe" to display. Thus, you'd use::
+``|f(...)|safe`` is to be considered unsafe and should not pass code review.
 
-    {{ form.myfield|safe }}
+If you interpolate into a base string that does *not contain HTML*, you may
+keep on using ``|f(...)`` without ``|safe``, of course, as it will be
+auto-escaped on output::
+
+    {{ _('Author name: {author}')|f(author=user.display_name) }}
+
+
+Form fields
+~~~~~~~~~~~
+Jinja2, unlike Django templates, by default does not consider Django forms
+"safe" to display. Thus, you'd use something like ``{{ form.myfield|safe }}``.
 
 In order to minimize the use of ``|safe`` (and thus possible unsafe uses of
 it), playdoh monkey-patches the Django forms framework so that form fields'
-HTML representation is considered safe by Jinja2 as well.
+HTML representations are considered safe by Jinja2 as well. Therefore, the
+following works as expected::
+
+    {{ form.myfield }}
 
 
 Mmmmh, Cookies
