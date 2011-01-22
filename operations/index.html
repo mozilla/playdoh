@@ -1,0 +1,170 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Operations &mdash; playdoh v1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="playdoh v1.0 documentation" href="../" />
+    <link rel="next" title="Libraries" href="../libs/" />
+    <link rel="prev" title="Getting started" href="../gettingstarted/" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../libs/" title="Libraries"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../gettingstarted/" title="Getting started"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../">playdoh v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="operations">
+<h1>Operations<a class="headerlink" href="#operations" title="Permalink to this headline">¶</a></h1>
+<p>Care and feeding of a Playdoh based app.</p>
+<div class="section" id="web-server">
+<h2>Web Server<a class="headerlink" href="#web-server" title="Permalink to this headline">¶</a></h2>
+<p>Apps are typically run under mod_wsgi in production.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">wsgi</span><span class="o">.</span><span class="n">wsgi</span>
+</pre></div>
+</div>
+<p>Developers can set that up or run in stand-alone mode:</p>
+<div class="highlight-python"><pre>./manage.py runserver 0.0.0.0:8000</pre>
+</div>
+</div>
+<div class="section" id="middleware-caching">
+<h2>Middleware Caching<a class="headerlink" href="#middleware-caching" title="Permalink to this headline">¶</a></h2>
+<p>TODO (memcache, redis)</p>
+</div>
+<div class="section" id="frontend-caching">
+<h2>Frontend Caching<a class="headerlink" href="#frontend-caching" title="Permalink to this headline">¶</a></h2>
+<p>Apps are typically run behind a Zeus load balancer.</p>
+</div>
+<div class="section" id="database">
+<h2>Database<a class="headerlink" href="#database" title="Permalink to this headline">¶</a></h2>
+<p>Apps typically use a MySQL database.</p>
+</div>
+<div class="section" id="message-queue">
+<h2>Message Queue<a class="headerlink" href="#message-queue" title="Permalink to this headline">¶</a></h2>
+<p>Playdoh comes packaged with celery and works well with RabbitMQ.</p>
+</div>
+<div class="section" id="updating-your-environment">
+<h2>Updating your Environment<a class="headerlink" href="#updating-your-environment" title="Permalink to this headline">¶</a></h2>
+<p>You can run update_site.py to keep your app current.
+It does the following:</p>
+<ul class="simple">
+<li>Updates source</li>
+<li>Updates vendor libraries</li>
+<li>Runs Database Migrations</li>
+<li>Builds JS and CSS</li>
+</ul>
+<div class="highlight-python"><pre>./bin/update_site.py -e dev
+./bin/update_site.py -e stage
+./bin/update_site.py -e prod</pre>
+</div>
+<p>You may pass a -v and update_site will explain what
+commands as it runs them.</p>
+<p>If there is an error on any step, the script stops.</p>
+<p>IT will typically put bin/update_site.py into a cron for
+auto deployment to stage environments.</p>
+<p>Edit your copy to customize your branching and/or release practises.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Operations</a><ul>
+<li><a class="reference internal" href="#web-server">Web Server</a></li>
+<li><a class="reference internal" href="#middleware-caching">Middleware Caching</a></li>
+<li><a class="reference internal" href="#frontend-caching">Frontend Caching</a></li>
+<li><a class="reference internal" href="#database">Database</a></li>
+<li><a class="reference internal" href="#message-queue">Message Queue</a></li>
+<li><a class="reference internal" href="#updating-your-environment">Updating your Environment</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../gettingstarted/"
+                        title="previous chapter">Getting started</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../libs/"
+                        title="next chapter">Libraries</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/operations.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search/" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../libs/" title="Libraries"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../gettingstarted/" title="Getting started"
+             >previous</a> |</li>
+        <li><a href="../">playdoh v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Mozilla.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.6.
+    </div>
+  </body>
+</html>
