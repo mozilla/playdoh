@@ -50,10 +50,10 @@
             
   <div class="section" id="operations">
 <h1>Operations<a class="headerlink" href="#operations" title="Permalink to this headline">¶</a></h1>
-<p>Care and feeding of a Playdoh based app.</p>
+<p>Care and feeding of a Playdoh-based app.</p>
 <div class="section" id="web-server">
 <h2>Web Server<a class="headerlink" href="#web-server" title="Permalink to this headline">¶</a></h2>
-<p>Apps are typically run under mod_wsgi in production.</p>
+<p>Apps are typically run under Apache and mod_wsgi in production. Entry point:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">wsgi</span><span class="o">.</span><span class="n">wsgi</span>
 </pre></div>
 </div>
@@ -79,7 +79,7 @@
 </div>
 <div class="section" id="updating-your-environment">
 <h2>Updating your Environment<a class="headerlink" href="#updating-your-environment" title="Permalink to this headline">¶</a></h2>
-<p>You can run update_site.py to keep your app current.
+<p>You can run <tt class="docutils literal"><span class="pre">update_site.py</span></tt> to keep your app current.
 It does the following:</p>
 <ul class="simple">
 <li>Updates source</li>
@@ -91,12 +91,12 @@ It does the following:</p>
 ./bin/update_site.py -e stage
 ./bin/update_site.py -e prod</pre>
 </div>
-<p>You may pass a -v and update_site will explain what
-commands as it runs them.</p>
+<p>You may pass a <tt class="docutils literal"><span class="pre">-v</span></tt> and update_site will explain what commands as it runs
+them.</p>
 <p>If there is an error on any step, the script stops.</p>
-<p>IT will typically put bin/update_site.py into a cron for
-auto deployment to stage environments.</p>
-<p>Edit your copy to customize your branching and/or release practises.</p>
+<p>IT will typically put <tt class="docutils literal"><span class="pre">bin/update_site.py</span></tt> into a cron for auto-deployment
+to stage environments.</p>
+<p>Edit your copy to customize your branching and/or release practices.</p>
 </div>
 </div>
 
