@@ -98,8 +98,8 @@ disabled by default.</p>
 and httponly cookies the default, unless specifically requested otherwise.</p>
 <p>To disable either of these patches, set <tt class="docutils literal"><span class="pre">COOKIES_SECURE</span> <span class="pre">=</span> <span class="pre">False</span></tt> or
 <tt class="docutils literal"><span class="pre">COOKIES_HTTPONLY</span> <span class="pre">=</span> <span class="pre">False</span></tt> in <tt class="docutils literal"><span class="pre">settings.py</span></tt>.</p>
-<p>You can exempt every cookie by passing <tt class="docutils literal"><span class="pre">secure=False</span></tt> or <tt class="docutils literal"><span class="pre">httponly=False</span></tt>
-to the <tt class="docutils literal"><span class="pre">set_cookie</span></tt> call, respectively:</p>
+<p>You can exempt any cookie by passing <tt class="docutils literal"><span class="pre">secure=False</span></tt> or <tt class="docutils literal"><span class="pre">httponly=False</span></tt> to
+the <tt class="docutils literal"><span class="pre">set_cookie</span></tt> call, respectively:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">response</span><span class="o">.</span><span class="n">set_cookie</span><span class="p">(</span><span class="s">&#39;hello&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;world&#39;</span><span class="p">,</span> <span class="n">secure</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">httponly</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </pre></div>
 </div>
