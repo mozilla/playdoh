@@ -53,22 +53,25 @@ with playdoh.</p>
 <p>Using something like <tt class="docutils literal"><span class="pre">mystring|safe</span></tt> in a template will prevent Jinja2 from
 auto-escaping it. Sadly, this requires us to be really sure that <tt class="docutils literal"><span class="pre">mystring</span></tt>
 is not raw, user-entered data. Otherwise we introduce an XSS vulnerability.</p>
-<p><tt class="docutils literal"><span class="pre">|safe</span></tt> is safe to use in cases where, for example, you have a localized
-string that contains some HTML:</p>
-<div class="highlight-python"><pre>{{ _('Welcome to &lt;strong&gt;playdoh&lt;/strong&gt;!')|safe }}</pre>
+<p>We have therefore eliminated the need for <tt class="docutils literal"><span class="pre">|safe</span></tt> for localized strings. This
+works:</p>
+<div class="highlight-python"><pre>{{ _('Hello &lt;strong&gt;world&lt;/strong&gt;!') }}</pre>
 </div>
 <div class="section" id="string-interpolation">
 <h3>String interpolation<a class="headerlink" href="#string-interpolation" title="Permalink to this headline">¶</a></h3>
-<p>When you <em>interpolate</em> data into such a string, do not use <tt class="docutils literal"><span class="pre">|f(...)|safe</span></tt>.
-The data could be unsafe. Instead, use the helper <tt class="docutils literal"><span class="pre">|fe(...)</span></tt>. It will
-escape all its arguments before doing string interpolation, then return
-HTML that&#8217;s safe to use:</p>
+<p>When you <em>interpolate</em> data into such a string, however, the resulting output
+will lose its &#8220;safeness&#8221; and be escaped again. To mark the <em>localized part</em>
+of an interpolated string as safe, do not use <tt class="docutils literal"><span class="pre">|f(...)|safe</span></tt>. The data could
+be unsafe. Instead, use the helper <tt class="docutils literal"><span class="pre">|fe(...)</span></tt>. It will escape all its
+arguments before doing string interpolation, then return HTML that&#8217;s safe to
+use:</p>
 <div class="highlight-python"><pre>{{ _('Welcome back, &lt;strong&gt;{username}&lt;/strong&gt;!')|fe(username=user.display_name) }}</pre>
 </div>
-<p><tt class="docutils literal"><span class="pre">|f(...)|safe</span></tt> is to be considered unsafe and should not pass code review.</p>
+<p><tt class="docutils literal"><span class="pre">|f(...)|safe</span></tt> is to be considered unsafe and <strong>should not pass code
+review</strong>.</p>
 <p>If you interpolate into a base string that does <em>not contain HTML</em>, you may
-keep on using <tt class="docutils literal"><span class="pre">|f(...)</span></tt> without <tt class="docutils literal"><span class="pre">|safe</span></tt>, of course, as it will be
-auto-escaped on output:</p>
+keep on using <tt class="docutils literal"><span class="pre">|f(...)</span></tt> without <tt class="docutils literal"><span class="pre">|safe</span></tt>, of course, as the auto-escaping
+won&#8217;t harm anything:</p>
 <div class="highlight-python"><pre>{{ _('Author name: {author}')|f(author=user.display_name) }}</pre>
 </div>
 </div>

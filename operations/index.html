@@ -54,9 +54,10 @@
 <div class="section" id="web-server">
 <h2>Web Server<a class="headerlink" href="#web-server" title="Permalink to this headline">¶</a></h2>
 <p>Apps are typically run under Apache and mod_wsgi in production. Entry point:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">wsgi</span><span class="o">.</span><span class="n">wsgi</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">wsgi</span><span class="o">/</span><span class="n">playdoh</span><span class="o">.</span><span class="n">wsgi</span>
 </pre></div>
 </div>
+<p>(or whatever you rename it too...)</p>
 <p>Developers can set that up or run in stand-alone mode:</p>
 <div class="highlight-python"><pre>./manage.py runserver 0.0.0.0:8000</pre>
 </div>

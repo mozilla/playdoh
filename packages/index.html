@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="playdoh v1.0 documentation" href="../" />
     <link rel="next" title="Documentation with Sphinx" href="../docs/" />
-    <link rel="prev" title="L10n Update" href="../l10n_update/" /> 
+    <link rel="prev" title="Localization (L10n)" href="../l10n/" /> 
   </head>
   <body>
     <div class="related">
@@ -37,7 +37,7 @@
           <a href="../docs/" title="Documentation with Sphinx"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="../l10n_update/" title="L10n Update"
+          <a href="../l10n/" title="Localization (L10n)"
              accesskey="P">previous</a> |</li>
         <li><a href="../">playdoh v1.0 documentation</a> &raquo;</li> 
       </ul>
@@ -51,9 +51,12 @@
   <div class="section" id="pip-and-friends-packaging">
 <span id="packages"></span><h1>pip and friends: Packaging<a class="headerlink" href="#pip-and-friends-packaging" title="Permalink to this headline">¶</a></h1>
 <p><em>(largely borrowed from Zamboni)</em></p>
-<p>There are two ways of getting packages in your playdoh-based project. The
-first is to install everything using pip. We have our packages separated into
-three files:</p>
+<p>There are two ways of getting packages in your playdoh-based project. <tt class="docutils literal"><span class="pre">pip</span></tt>
+and <tt class="docutils literal"><span class="pre">virtualenv</span></tt> as well as the preferred method, a <strong>vendor library</strong>.</p>
+<div class="section" id="for-reference-pip">
+<h2>For reference: pip<a class="headerlink" href="#for-reference-pip" title="Permalink to this headline">¶</a></h2>
+<p>The classical method of installing is using pip. We have our packages
+separated into three files:</p>
 <dl class="docutils">
 <dt><a href="#id1"><span class="problematic" id="id2">:src:`requirements/compiled.txt`</span></a></dt>
 <dd>All packages that require (or go faster with) compilation.  These can&#8217;t be
@@ -66,15 +69,13 @@ also need to get <tt class="docutils literal"><span class="pre">requirements/com
 <dd>All the packages needed for running tests and development servers.  This
 automatically includes <tt class="docutils literal"><span class="pre">requirements/prod.txt</span></tt>.</dd>
 </dl>
-<div class="section" id="installing-through-pip">
-<h2>Installing through pip<a class="headerlink" href="#installing-through-pip" title="Permalink to this headline">¶</a></h2>
-<p>You can get a development environment with</p>
+<p>With pip, you can get a development environment with:</p>
 <div class="highlight-python"><pre>pip install -r requirements/dev.txt -r requirements/compiled.txt</pre>
 </div>
 </div>
-<div class="section" id="using-the-vendor-library">
-<h2>Using the vendor library<a class="headerlink" href="#using-the-vendor-library" title="Permalink to this headline">¶</a></h2>
-<p>The other method is to use the /vendor library of all packages and
+<div class="section" id="preferred-the-vendor-library">
+<h2>Preferred: The vendor library<a class="headerlink" href="#preferred-the-vendor-library" title="Permalink to this headline">¶</a></h2>
+<p>The other method is to use the <tt class="docutils literal"><span class="pre">/vendor</span></tt> library of all packages and
 repositories.</p>
 <p>By default, the vendor lib is checked out as a <em>git submodule</em> under
 <tt class="docutils literal"><span class="pre">vendor/</span></tt>. If you <em>do</em> need to check it out separately, do:</p>
@@ -82,12 +83,53 @@ repositories.</p>
 </div>
 <p>Once the playdoh-lib repo has been downloaded to <tt class="docutils literal"><span class="pre">/vendor</span></tt>, you only need to
 install the compiled packages.  These can come from your system package manager
-or from</p>
+or from:</p>
 <div class="highlight-python"><pre>pip install -r requirements/compiled.txt</pre>
 </div>
 </div>
+<div class="section" id="global-vs-local-library">
+<h2>Global vs. local library<a class="headerlink" href="#global-vs-local-library" title="Permalink to this headline">¶</a></h2>
+<p>playdoh provides a its default library in the <tt class="docutils literal"><span class="pre">vendor/</span></tt> directory. You <em>may</em>
+fork and change it, but that will make it hard to pull updates from the
+upstream library later.</p>
+<p>If you want to make only a few local additions or override some of the libs in
+<tt class="docutils literal"><span class="pre">vendor/</span></tt>, make those changes to the directory <tt class="docutils literal"><span class="pre">vendor-local/</span></tt> instead,
+which (in <tt class="docutils literal"><span class="pre">manage.py</span></tt>) is given precedence over playdoh&#8217;s vendor dir.</p>
+<p>All other instructions are equal.</p>
+</div>
 <div class="section" id="adding-new-packages">
 <h2>Adding new packages<a class="headerlink" href="#adding-new-packages" title="Permalink to this headline">¶</a></h2>
+<p>If we wanted to add a new dependency called <tt class="docutils literal"><span class="pre">cheeseballs</span></tt> to playdoh, you
+would add it to <tt class="docutils literal"><span class="pre">requirements/prod.txt</span></tt> or <tt class="docutils literal"><span class="pre">requirements/dev.txt</span></tt>. This
+makes it available to users installing into virtualenvs.</p>
+<p>We also need to add the new package to the vendor lib.</p>
+<p>First, you then need to update <tt class="docutils literal"><span class="pre">vendor-local/vendor.pth</span></tt>. Python uses
+<tt class="docutils literal"><span class="pre">.pth</span></tt> files to dynamically add directories to <tt class="docutils literal"><span class="pre">sys.path</span></tt> (<a class="reference external" href="http://docs.python.org/library/site.html">docs</a>).</p>
+<p>I created <tt class="docutils literal"><span class="pre">vendor.pth</span></tt> with this:</p>
+<div class="highlight-python"><pre>find src/ -type d -depth 1 &gt; vendor.pth</pre>
+</div>
+<p>Secondly, we need to add the source. There are two ways, depending on how
+this project is hosted:</p>
+<p>For non-git based repos (hg, CVS, tarball) do:</p>
+<div class="highlight-python"><pre>pip install -I --install-option="--home=`pwd`/vendor-local" --src='vendor-local/src' cheeseballs
+cd vendor-local
+git add src/cheeseballs
+git commit vendor.pth src/cheeseballs</pre>
+</div>
+<p>For a git-based package, add it as a git submodule:</p>
+<div class="highlight-python"><pre>cd vendor-local
+git submodule add git://github.com/mozilla/cheeseballs.git src/cheeseballs
+git commit vendor.pth .gitmodules src/cheeseballs</pre>
+</div>
+<p>Some packages (like <tt class="docutils literal"><span class="pre">html5lib</span></tt> and <tt class="docutils literal"><span class="pre">selenium</span></tt>) are troublesome, because
+their source lives inside an extra subdirectory <tt class="docutils literal"><span class="pre">src/</span></tt> inside their checkout.
+So they need to be sourced with <tt class="docutils literal"><span class="pre">src/html5lib/src</span></tt>, for example. Hopefully
+you won&#8217;t hit any snags like that.</p>
+</div>
+<div class="section" id="advanced-topics">
+<h2>Advanced Topics<a class="headerlink" href="#advanced-topics" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="initial-creation-of-the-vendor-library">
+<h3>Initial creation of the vendor library<a class="headerlink" href="#initial-creation-of-the-vendor-library" title="Permalink to this headline">¶</a></h3>
 <p>The vendor repo was seeded with</p>
 <div class="highlight-python"><pre>pip install -I --install-option="--home=`pwd`/vendor" --src='vendor/src' -r requirements/dev.txt
 
@@ -102,28 +144,12 @@ for f in src/*; do
 done
 git add .</pre>
 </div>
-<p>If we wanted to add a new dependency called <tt class="docutils literal"><span class="pre">cheeseballs</span></tt> to zamboni, you
-would add it to <tt class="docutils literal"><span class="pre">requirements/prod.txt</span></tt> or <tt class="docutils literal"><span class="pre">requirements/dev.txt</span></tt> and then
-do:</p>
-<div class="highlight-python"><pre>pip install -I --install-option="--home=`pwd`/vendor" --src='vendor/src' cheeseballs</pre>
 </div>
-<p>or for a git-based package:</p>
-<div class="highlight-python"><pre>pip install -I --install-option="--home=`pwd`/vendor" --src='vendor/src' -e git://github.com/mozilla/something.git#egg=something</pre>
-</div>
-<p>For git-based packages, you then need to update <tt class="docutils literal"><span class="pre">vendor/vendor.pth</span></tt>. Python
-uses <tt class="docutils literal"><span class="pre">.pth</span></tt> files to dynamically add directories to <tt class="docutils literal"><span class="pre">sys.path</span></tt> (<a class="reference external" href="http://docs.python.org/library/site.html">docs</a>).</p>
-<p>I created <tt class="docutils literal"><span class="pre">vendor.pth</span></tt> with this:</p>
-<div class="highlight-python"><pre>find src/ -type d -depth 1 &gt; vendor.pth</pre>
-</div>
-<p>Some packages (like <tt class="docutils literal"><span class="pre">html5lib</span></tt> and <tt class="docutils literal"><span class="pre">selenium</span></tt>) are troublesome, because
-their source lives inside an extra subdirectory <tt class="docutils literal"><span class="pre">src/</span></tt> inside their checkout.
-So they need to be sourced with <tt class="docutils literal"><span class="pre">src/html5lib/src</span></tt>, for example. Hopefully
-you won&#8217;t hit any snags like that.</p>
-<div class="section" id="adding-submodules">
-<h3>Adding submodules<a class="headerlink" href="#adding-submodules" title="Permalink to this headline">¶</a></h3>
-<p>You want to make your git-based packages <em>git submodules</em> inside the vendor
-library. To set up the first batch of submodules, something like the following
-happened:</p>
+<div class="section" id="adding-lots-of-git-submodules">
+<h3>Adding lots of git submodules<a class="headerlink" href="#adding-lots-of-git-submodules" title="Permalink to this headline">¶</a></h3>
+<p>As noted in <em>Adding new packages</em>, git-based packages are <em>git submodules</em>
+inside the vendor library. To set up the first batch of submodules, something
+like the following happened:</p>
 <div class="highlight-python"><pre>for f in src/*
     pushd $f &amp;&amp; REPO=$(git config remote.origin.url) &amp;&amp; popd &amp;&amp; git submodule add $REPO $f</pre>
 </div>
@@ -140,10 +166,13 @@ happened:</p>
   <h3><a href="../">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">pip and friends: Packaging</a><ul>
-<li><a class="reference internal" href="#installing-through-pip">Installing through pip</a></li>
-<li><a class="reference internal" href="#using-the-vendor-library">Using the vendor library</a></li>
-<li><a class="reference internal" href="#adding-new-packages">Adding new packages</a><ul>
-<li><a class="reference internal" href="#adding-submodules">Adding submodules</a></li>
+<li><a class="reference internal" href="#for-reference-pip">For reference: pip</a></li>
+<li><a class="reference internal" href="#preferred-the-vendor-library">Preferred: The vendor library</a></li>
+<li><a class="reference internal" href="#global-vs-local-library">Global vs. local library</a></li>
+<li><a class="reference internal" href="#adding-new-packages">Adding new packages</a></li>
+<li><a class="reference internal" href="#advanced-topics">Advanced Topics</a><ul>
+<li><a class="reference internal" href="#initial-creation-of-the-vendor-library">Initial creation of the vendor library</a></li>
+<li><a class="reference internal" href="#adding-lots-of-git-submodules">Adding lots of git submodules</a></li>
 </ul>
 </li>
 </ul>
@@ -151,8 +180,8 @@ happened:</p>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="../l10n_update/"
-                        title="previous chapter">L10n Update</a></p>
+  <p class="topless"><a href="../l10n/"
+                        title="previous chapter">Localization (L10n)</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="../docs/"
                         title="next chapter">Documentation with Sphinx</a></p>
@@ -188,7 +217,7 @@ happened:</p>
           <a href="../docs/" title="Documentation with Sphinx"
              >next</a> |</li>
         <li class="right" >
-          <a href="../l10n_update/" title="L10n Update"
+          <a href="../l10n/" title="Localization (L10n)"
              >previous</a> |</li>
         <li><a href="../">playdoh v1.0 documentation</a> &raquo;</li> 
       </ul>
