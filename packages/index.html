@@ -92,8 +92,9 @@ this project is hosted:</p>
 <p>For such repos or for packages coming from PyPI, do:</p>
 <div class="highlight-python"><pre>pip install -I --install-option="--home=`pwd`/vendor-local" --src='vendor-local/src' cheeseballs
 cd vendor-local
-git add src/cheeseballs
-git commit src/cheeseballs</pre>
+# if it's a non-git repository checkout, add a line to vendor.pth (see below)
+git add .
+git commit</pre>
 </div>
 <p>Done. Try <tt class="docutils literal"><span class="pre">./manage.py</span> <span class="pre">shell</span></tt> and then <tt class="docutils literal"><span class="pre">import</span> <span class="pre">cheeseballs</span></tt> to make sure
 it worked.</p>
