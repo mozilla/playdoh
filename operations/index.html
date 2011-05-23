@@ -57,9 +57,39 @@
 <div class="highlight-python"><div class="highlight"><pre><span class="n">wsgi</span><span class="o">/</span><span class="n">playdoh</span><span class="o">.</span><span class="n">wsgi</span>
 </pre></div>
 </div>
-<p>(or whatever you rename it too...)</p>
+<p>(or whatever you rename it to...)</p>
 <p>Developers can set that up or run in stand-alone mode:</p>
 <div class="highlight-python"><pre>./manage.py runserver 0.0.0.0:8000</pre>
+</div>
+<p>It is critical that developers run the app at least once via mod_wsgi before
+certifying an app as <strong>stage ready</strong>.</p>
+<div class="section" id="apache">
+<h3>Apache<a class="headerlink" href="#apache" title="Permalink to this headline">¶</a></h3>
+<p>This is a typical virtualhost directive being used in production:</p>
+<div class="highlight-python"><pre>&lt;VirtualHost *:80&gt;
+    ServerName %HOSTNAME%
+
+    Alias /media %APP_PATH/media
+
+    WSGIScriptAlias / %APP_PATH/wsgi/playdoh.wsgi
+    WSGIDaemonProcess playdoh processes=16 threads=1 display-name=playdoh
+    WSGIProcessGroup playdoh
+&lt;/VirtualHost&gt;</pre>
+</div>
+</div>
+<div class="section" id="gunicorn">
+<h3>gunicorn<a class="headerlink" href="#gunicorn" title="Permalink to this headline">¶</a></h3>
+<p>Totally optional and only for the cool kids.</p>
+<p>A lighter weight method of testing your mod_wsgi setup is by using
+<a class="reference external" href="http://gunicorn.org/">gunicorn</a>.</p>
+<p>One time setup:</p>
+<div class="highlight-python"><pre>pip install gunicorn
+ln -s wsgi/playdoh.wsgi wsgi/playdoh.py</pre>
+</div>
+<p>Each Time:</p>
+<div class="highlight-python"><pre>touch wsgi/__init__.py
+gunicorn wsgi/playdoh:application</pre>
+</div>
 </div>
 </div>
 <div class="section" id="middleware-caching">
@@ -110,7 +140,11 @@ to stage environments.</p>
   <h3><a href="../">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Operations</a><ul>
-<li><a class="reference internal" href="#web-server">Web Server</a></li>
+<li><a class="reference internal" href="#web-server">Web Server</a><ul>
+<li><a class="reference internal" href="#apache">Apache</a></li>
+<li><a class="reference internal" href="#gunicorn">gunicorn</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#middleware-caching">Middleware Caching</a></li>
 <li><a class="reference internal" href="#frontend-caching">Frontend Caching</a></li>
 <li><a class="reference internal" href="#database">Database</a></li>

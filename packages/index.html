@@ -51,8 +51,14 @@
   <div class="section" id="pip-and-friends-packaging">
 <span id="packages"></span><h1>pip and friends: Packaging<a class="headerlink" href="#pip-and-friends-packaging" title="Permalink to this headline">¶</a></h1>
 <p><em>(largely borrowed from Zamboni)</em></p>
-<p>There are two ways of getting packages in your playdoh-based project. <tt class="docutils literal"><span class="pre">pip</span></tt>
-and <tt class="docutils literal"><span class="pre">virtualenv</span></tt> as well as the preferred method, a <strong>vendor library</strong>.</p>
+<p>Your app will depend on lots of tasty open source Python libararies. The list
+of all your dependencies should exist in two places:
+# requirements/prod.txt
+# As a submodule of vendor</p>
+<p>Ultimately your app code will run against the libraries under vendor via mod_wsgi.</p>
+<p>Why requirements? For developement, you can use virtualenvs and pip to have a
+tidy self-contained environment. If run from the Django runserver command, you
+don&#8217;t even need a web server.</p>
 <div class="section" id="the-vendor-library">
 <h2>The vendor library<a class="headerlink" href="#the-vendor-library" title="Permalink to this headline">¶</a></h2>
 <p>The <tt class="docutils literal"><span class="pre">/vendor</span></tt> library is supposed to contain all packages and repositories.
@@ -70,34 +76,59 @@ These can come from your system package manager or from:</p>
 </div>
 <div class="section" id="global-vs-local-library">
 <h2>Global vs. local library<a class="headerlink" href="#global-vs-local-library" title="Permalink to this headline">¶</a></h2>
-<p>playdoh provides its default library in the <tt class="docutils literal"><span class="pre">vendor/</span></tt> directory. You <em>may</em>
+<p>Playdoh provides its default library in the <tt class="docutils literal"><span class="pre">vendor/</span></tt> directory. You <em>may</em>
 fork and change it, but that will make it hard to pull updates from the
 upstream library later.</p>
 <p>If you want to make only a few <strong>local additions</strong> or override some of the
 libs in <tt class="docutils literal"><span class="pre">vendor/</span></tt>, make those changes to the directory <tt class="docutils literal"><span class="pre">vendor-local/</span></tt>
 instead, which (in <tt class="docutils literal"><span class="pre">manage.py</span></tt>) is given precedence over playdoh&#8217;s vendor
 dir.</p>
-<p>All other instructions are equal.</p>
+</div>
+<div class="section" id="compiled-txt-vs-prod-txt">
+<h2>compiled.txt vs prod.txt<a class="headerlink" href="#compiled-txt-vs-prod-txt" title="Permalink to this headline">¶</a></h2>
+<p>If a Python library requires compilation, it should be recorded in compiled.txt.
+These aren&#8217;t as portable and cannot be shipped in the vendor library.
+For local development, it&#8217;s nice to pip install these into a virtualenv. A
+common practise is to use virtual env <strong>only</strong> for compiled libraries and
+vendor for the rest of your dependencies.</p>
 </div>
 <div class="section" id="adding-new-packages">
 <h2>Adding new packages<a class="headerlink" href="#adding-new-packages" title="Permalink to this headline">¶</a></h2>
 <p>If we wanted to add a new dependency called <tt class="docutils literal"><span class="pre">cheeseballs</span></tt> to playdoh, you
-would add it to <tt class="docutils literal"><span class="pre">requirements/prod.txt</span></tt> or <tt class="docutils literal"><span class="pre">requirements/dev.txt</span></tt>. This
-makes it available to users installing into virtualenvs.</p>
-<p>We also need to add the new package to the vendor lib.</p>
+would add it to <tt class="docutils literal"><span class="pre">requirements/prod.txt</span></tt>. If your library isn&#8217;t used in
+production, then put it in <tt class="docutils literal"><span class="pre">requirements/dev.txt</span></tt>. This makes it available
+to users installing into virtualenvs.</p>
+<p>We also need to add the new package to the vendor lib, since that is what runs
+in production...</p>
 <p>First, we need to add the source. There are two ways, depending on how
 this project is hosted:</p>
 <div class="section" id="non-git-based-repos-hg-cvs-tarball">
 <h3>Non-git based repos (hg, CVS, tarball)<a class="headerlink" href="#non-git-based-repos-hg-cvs-tarball" title="Permalink to this headline">¶</a></h3>
 <p>For such repos or for packages coming from PyPI, do:</p>
-<div class="highlight-python"><pre>pip install -I --install-option="--home=`pwd`/vendor-local" --src='vendor-local/src' cheeseballs
+<div class="highlight-python"><pre>pip install -I --install-option="--home=`pwd`/vendor-local" cheeseballs
 cd vendor-local
-# if it's a non-git repository checkout, add a line to vendor.pth (see below)
-git add .
+git add lib/python/cheeseballs
 git commit</pre>
 </div>
-<p>Done. Try <tt class="docutils literal"><span class="pre">./manage.py</span> <span class="pre">shell</span></tt> and then <tt class="docutils literal"><span class="pre">import</span> <span class="pre">cheeseballs</span></tt> to make sure
-it worked.</p>
+<p>Optionally, if the package installs executables add them too. For
+example:</p>
+<div class="highlight-python"><pre>cd vendor-local
+git add bin/cheeseballer
+git commit</pre>
+</div>
+<p>For hg repos that are not on PyPI, they can be installed with pip too
+but omit the <tt class="docutils literal"><span class="pre">--home</span></tt> option and use the <tt class="docutils literal"><span class="pre">--src</span></tt> instead. For
+example:</p>
+<div class="highlight-python"><pre>pip install -I --src='vendor-local/src' \
+-e hg+http://bitbucket.org/jespern/django-piston@default#egg=django-piston
+cd vendor-local
+git add src/django-piston
+git commit</pre>
+</div>
+<p>Note: Installed source packages need to be appended to
+<tt class="docutils literal"><span class="pre">vendor-local/vendor.pth</span></tt>. See note below. For example:</p>
+<div class="highlight-python"><pre>echo src/django-piston &gt;&gt; vendor-local/vendor.pth</pre>
+</div>
 </div>
 <div class="section" id="git-based-repositories">
 <h3>git-based repositories<a class="headerlink" href="#git-based-repositories" title="Permalink to this headline">¶</a></h3>
@@ -117,8 +148,15 @@ you won&#8217;t hit any snags like that.</p>
 it worked.</p>
 </div>
 </div>
+<div class="section" id="testing-your-vendor-change">
+<h2>Testing Your Vendor Change<a class="headerlink" href="#testing-your-vendor-change" title="Permalink to this headline">¶</a></h2>
+<p>It&#8217;s critical that you test your app running under mod_wsgi. Although you
+may use runserver day to day, go ahead and run some code through WSGI to
+prove vendor is setup properly. (throw an import into your view, etc)</p>
+</div>
 <div class="section" id="advanced-topics">
 <h2>Advanced Topics<a class="headerlink" href="#advanced-topics" title="Permalink to this headline">¶</a></h2>
+<p>TODO [automate these instructions](&lt;<a class="reference external" href="https://github.com/mozilla/playdoh/issues/30">https://github.com/mozilla/playdoh/issues/30</a>)</p>
 <div class="section" id="initial-creation-of-the-vendor-library">
 <h3>Initial creation of the vendor library<a class="headerlink" href="#initial-creation-of-the-vendor-library" title="Permalink to this headline">¶</a></h3>
 <p>The vendor repo was seeded with</p>
@@ -179,11 +217,13 @@ automatically includes <tt class="docutils literal"><span class="pre">requiremen
 <li><a class="reference internal" href="#">pip and friends: Packaging</a><ul>
 <li><a class="reference internal" href="#the-vendor-library">The vendor library</a></li>
 <li><a class="reference internal" href="#global-vs-local-library">Global vs. local library</a></li>
+<li><a class="reference internal" href="#compiled-txt-vs-prod-txt">compiled.txt vs prod.txt</a></li>
 <li><a class="reference internal" href="#adding-new-packages">Adding new packages</a><ul>
 <li><a class="reference internal" href="#non-git-based-repos-hg-cvs-tarball">Non-git based repos (hg, CVS, tarball)</a></li>
 <li><a class="reference internal" href="#git-based-repositories">git-based repositories</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#testing-your-vendor-change">Testing Your Vendor Change</a></li>
 <li><a class="reference internal" href="#advanced-topics">Advanced Topics</a><ul>
 <li><a class="reference internal" href="#initial-creation-of-the-vendor-library">Initial creation of the vendor library</a></li>
 <li><a class="reference internal" href="#adding-lots-of-git-submodules">Adding lots of git submodules</a></li>

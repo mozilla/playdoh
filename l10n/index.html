@@ -95,7 +95,6 @@ svn checkout https://svn.mozilla.org/projects/something/trunk/locale locale
 </li>
 <li><p class="first">Now extract strings from your project:</p>
 <div class="highlight-python"><pre>./manage.py extract
-./manage.py verbatimize --rename
 ./manage.py merge</pre>
 </div>
 </li>
@@ -115,10 +114,6 @@ git commit -m 'Built .mo files'</pre>
 <p>If you&#8217;ve developed a feature and changed or added strings, you need to extract
 them and merge them into the existing .po files:</p>
 <div class="highlight-python"><pre>./manage.py extract
-
-./manage.py verbatimize --rename
-# This will copy the POT files created in step 1 to templates/LC_MESSAGES.
-
 ./manage.py merge</pre>
 </div>
 <p>Optionally compile all .mo files:</p>
