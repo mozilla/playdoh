@@ -1,0 +1,148 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Database Migrations &mdash; playdoh v1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="playdoh v1.0 documentation" href="../" />
+    <link rel="next" title="Localization (L10n)" href="../l10n/" />
+    <link rel="prev" title="Operations" href="../operations/" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../l10n/" title="Localization (L10n)"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../operations/" title="Operations"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../">playdoh v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="database-migrations">
+<span id="migrations"></span><h1>Database Migrations<a class="headerlink" href="#database-migrations" title="Permalink to this headline">¶</a></h1>
+<p>For database migrations, we use a strikingly simple tool called <a class="reference external" href="https://github.com/jbalogh/schematic">schematic</a>.</p>
+<p>It runs numbered SQL files on top of your existing database. In a table
+named <tt class="docutils literal"><span class="pre">schema_version</span></tt>, it remembers what migration number your database
+is currently on. If the table does not exist, it considers the database
+to be at migration 0 and creates the table.</p>
+<p>By default, migrations live in the <tt class="docutils literal"><span class="pre">migrations/</span></tt> directory. Run schematic
+like this:</p>
+<div class="highlight-python"><pre>schematic migrations/
+
+# or, when using the vendor library:
+./vendor/src/schematic/schematic migrations/</pre>
+</div>
+<div class="section" id="schematic-vs-syncdb">
+<h2>Schematic vs. syncdb<a class="headerlink" href="#schematic-vs-syncdb" title="Permalink to this headline">¶</a></h2>
+<p>To create a DB from scratch, Django users run <tt class="docutils literal"><span class="pre">./manage.py</span> <span class="pre">syncdb</span></tt>. It
+analyzes the models and generates SQL accordingly.</p>
+<p>Unfortunately, as the schema evolves, the output of <em>syncdb</em> will conflict
+with the <em>schematic</em> migrations you might have added to evolve older DBs.
+To circumvent this, consider the following:</p>
+<p>When done creating the first set of models, capture their syncdb-created SQL
+output as a baseline migration (number 1):</p>
+<div class="highlight-python"><pre># edit some models in apps/foo/models.py
+./manage.py sqlall foo &gt; migrations/01-base.sql</pre>
+</div>
+<p>Then, as the schema evolves, add incremental migrations as <tt class="docutils literal"><span class="pre">02-...sql</span></tt>, etc.</p>
+<p>When setting up a copy of the codebase from scratch in the future, forgo
+<em>syncdb</em> altogether and after setting your empty database&#8217;s credentials
+correctly in <tt class="docutils literal"><span class="pre">settings_local.py</span></tt>, just run <tt class="docutils literal"><span class="pre">schematic</span> <span class="pre">migrations/</span></tt>. It will
+run your base migration, followed by incremental updates, and result in a
+database that&#8217;s up to date with your latest existing databases.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Database Migrations</a><ul>
+<li><a class="reference internal" href="#schematic-vs-syncdb">Schematic vs. syncdb</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../operations/"
+                        title="previous chapter">Operations</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../l10n/"
+                        title="next chapter">Localization (L10n)</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/migrations.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search/" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../l10n/" title="Localization (L10n)"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../operations/" title="Operations"
+             >previous</a> |</li>
+        <li><a href="../">playdoh v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Mozilla.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

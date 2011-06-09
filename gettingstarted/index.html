@@ -1,0 +1,153 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Getting started &mdash; playdoh v1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="playdoh v1.0 documentation" href="../" />
+    <link rel="next" title="Libraries" href="../libs/" />
+    <link rel="prev" title="Welcome to playdoh’s documentation!" href="../" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../libs/" title="Libraries"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../" title="Welcome to playdoh’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../">playdoh v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="getting-started">
+<h1>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<p>You need Python 2.6.</p>
+<p>To check out playdoh, run:</p>
+<div class="highlight-python"><pre>git clone --recursive git://github.com/mozilla/playdoh.git</pre>
+</div>
+<p>This project is set up to use a vendor library, i.e. a subdirectory <tt class="docutils literal"><span class="pre">vendor</span></tt>
+that contains all pure Python libraries required by this project. The recursive
+checkout will also clone these requirements.</p>
+<p>In addition, there are compiled libraries (such as Jinja2) that you will need
+to build yourself, either by installing them from <tt class="docutils literal"><span class="pre">pypi</span></tt> or by using your
+favorite package manager for your OS.</p>
+<p>For development, you can run this in a <a class="reference external" href="http://pypi.python.org/pypi/virtualenv">virtualenv environment</a>:</p>
+<div class="highlight-python"><pre>easy_install pip
+pip install -r requirements/compiled.txt</pre>
+</div>
+<p>For more information on vendor libraries, read <a class="reference internal" href="../packages/#packages"><em>pip and friends: Packaging</em></a>.</p>
+</div>
+<div class="section" id="starting-a-project-based-on-playdoh">
+<h2>Starting a project based on playdoh<a class="headerlink" href="#starting-a-project-based-on-playdoh" title="Permalink to this headline">¶</a></h2>
+<p>The default branch of playdoh is <tt class="docutils literal"><span class="pre">base</span></tt>. To start a new project, you fork
+playdoh and start working on your app in <tt class="docutils literal"><span class="pre">master</span></tt> (branched from base). If
+you start adding pieces that should go back into playdoh, you can apply the
+patch to base and move it upstream.</p>
+<p>Eventually you&#8217;ll probably diverge enough that you&#8217;ll want to delete the base
+branch.</p>
+</div>
+<div class="section" id="publishing-your-repo">
+<h2>Publishing your repo<a class="headerlink" href="#publishing-your-repo" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div>git remote rename origin playdoh
+git remote add origin <a class="reference external" href="mailto:git&#37;&#52;&#48;github&#46;com">git<span>&#64;</span>github<span>&#46;</span>com</a>:mozilla/foobar.git
+git push -u origin base</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Getting started</a><ul>
+<li><a class="reference internal" href="#requirements">Requirements</a></li>
+<li><a class="reference internal" href="#starting-a-project-based-on-playdoh">Starting a project based on playdoh</a></li>
+<li><a class="reference internal" href="#publishing-your-repo">Publishing your repo</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../"
+                        title="previous chapter">Welcome to playdoh&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../libs/"
+                        title="next chapter">Libraries</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/gettingstarted.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search/" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../libs/" title="Libraries"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../" title="Welcome to playdoh’s documentation!"
+             >previous</a> |</li>
+        <li><a href="../">playdoh v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Mozilla.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

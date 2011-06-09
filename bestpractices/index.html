@@ -1,0 +1,169 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Best Practices &mdash; playdoh v1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="playdoh v1.0 documentation" href="../" />
+    <link rel="prev" title="Documentation with Sphinx" href="../docs/" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../docs/" title="Documentation with Sphinx"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../">playdoh v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="best-practices">
+<span id="bestpractices"></span><h1>Best Practices<a class="headerlink" href="#best-practices" title="Permalink to this headline">¶</a></h1>
+<p>This page lists several best practices for writing secure web applications
+with playdoh.</p>
+<div class="section" id="safe-considered-harmful">
+<h2><tt class="docutils literal"><span class="pre">|safe</span></tt> considered harmful<a class="headerlink" href="#safe-considered-harmful" title="Permalink to this headline">¶</a></h2>
+<p>Using something like <tt class="docutils literal"><span class="pre">mystring|safe</span></tt> in a template will prevent Jinja2 from
+auto-escaping it. Sadly, this requires us to be really sure that <tt class="docutils literal"><span class="pre">mystring</span></tt>
+is not raw, user-entered data. Otherwise we introduce an XSS vulnerability.</p>
+<p>We have therefore eliminated the need for <tt class="docutils literal"><span class="pre">|safe</span></tt> for localized strings. This
+works:</p>
+<div class="highlight-python"><pre>{{ _('Hello &lt;strong&gt;world&lt;/strong&gt;!') }}</pre>
+</div>
+<div class="section" id="string-interpolation">
+<h3>String interpolation<a class="headerlink" href="#string-interpolation" title="Permalink to this headline">¶</a></h3>
+<p>When you <em>interpolate</em> data into such a string, however, the resulting output
+will lose its &#8220;safeness&#8221; and be escaped again. To mark the <em>localized part</em>
+of an interpolated string as safe, do not use <tt class="docutils literal"><span class="pre">|f(...)|safe</span></tt>. The data could
+be unsafe. Instead, use the helper <tt class="docutils literal"><span class="pre">|fe(...)</span></tt>. It will escape all its
+arguments before doing string interpolation, then return HTML that&#8217;s safe to
+use:</p>
+<div class="highlight-python"><pre>{{ _('Welcome back, &lt;strong&gt;{username}&lt;/strong&gt;!')|fe(username=user.display_name) }}</pre>
+</div>
+<p><tt class="docutils literal"><span class="pre">|f(...)|safe</span></tt> is to be considered unsafe and <strong>should not pass code
+review</strong>.</p>
+<p>If you interpolate into a base string that does <em>not contain HTML</em>, you may
+keep on using <tt class="docutils literal"><span class="pre">|f(...)</span></tt> without <tt class="docutils literal"><span class="pre">|safe</span></tt>, of course, as the auto-escaping
+won&#8217;t harm anything:</p>
+<div class="highlight-python"><pre>{{ _('Author name: {author}')|f(author=user.display_name) }}</pre>
+</div>
+</div>
+<div class="section" id="form-fields">
+<h3>Form fields<a class="headerlink" href="#form-fields" title="Permalink to this headline">¶</a></h3>
+<p>Jinja2, unlike Django templates, by default does not consider Django forms
+&#8220;safe&#8221; to display. Thus, you&#8217;d use something like <tt class="docutils literal"><span class="pre">{{</span> <span class="pre">form.myfield|safe</span> <span class="pre">}}</span></tt>.</p>
+<p>In order to minimize the use of <tt class="docutils literal"><span class="pre">|safe</span></tt> (and thus possible unsafe uses of
+it), playdoh monkey-patches the Django forms framework so that form fields&#8217;
+HTML representations are considered safe by Jinja2 as well. Therefore, the
+following works as expected:</p>
+<div class="highlight-python"><pre>{{ form.myfield }}</pre>
+</div>
+</div>
+</div>
+<div class="section" id="mmmmh-cookies">
+<h2>Mmmmh, Cookies<a class="headerlink" href="#mmmmh-cookies" title="Permalink to this headline">¶</a></h2>
+<p>Django&#8217;s default way of setting a cookie is <a class="reference external" href="http://docs.djangoproject.com/en/dev/ref/request-response/#django.http.HttpResponse.set_cookie">set_cookie</a> on the HTTP response.
+Unfortunately, both <strong>secure</strong> cookies (i.e., HTTPS-only) and <strong>httponly</strong>
+(i.e., cookies not readable by JavaScript, if the browser supports it) are
+disabled by default.</p>
+<p>To be secure by default, we use commonware&#8217;s <tt class="docutils literal"><span class="pre">cookies</span></tt> app. It makes secure
+and httponly cookies the default, unless specifically requested otherwise.</p>
+<p>To disable either of these patches, set <tt class="docutils literal"><span class="pre">COOKIES_SECURE</span> <span class="pre">=</span> <span class="pre">False</span></tt> or
+<tt class="docutils literal"><span class="pre">COOKIES_HTTPONLY</span> <span class="pre">=</span> <span class="pre">False</span></tt> in <tt class="docutils literal"><span class="pre">settings.py</span></tt>.</p>
+<p>You can exempt any cookie by passing <tt class="docutils literal"><span class="pre">secure=False</span></tt> or <tt class="docutils literal"><span class="pre">httponly=False</span></tt> to
+the <tt class="docutils literal"><span class="pre">set_cookie</span></tt> call, respectively:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">response</span><span class="o">.</span><span class="n">set_cookie</span><span class="p">(</span><span class="s">&#39;hello&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;world&#39;</span><span class="p">,</span> <span class="n">secure</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">httponly</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Best Practices</a><ul>
+<li><a class="reference internal" href="#safe-considered-harmful"><tt class="docutils literal"><span class="pre">|safe</span></tt> considered harmful</a><ul>
+<li><a class="reference internal" href="#string-interpolation">String interpolation</a></li>
+<li><a class="reference internal" href="#form-fields">Form fields</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mmmmh-cookies">Mmmmh, Cookies</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../docs/"
+                        title="previous chapter">Documentation with Sphinx</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/bestpractices.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search/" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../docs/" title="Documentation with Sphinx"
+             >previous</a> |</li>
+        <li><a href="../">playdoh v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Mozilla.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,181 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Documentation with Sphinx &mdash; playdoh v1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="playdoh v1.0 documentation" href="../" />
+    <link rel="next" title="Best Practices" href="../bestpractices/" />
+    <link rel="prev" title="pip and friends: Packaging" href="../packages/" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../bestpractices/" title="Best Practices"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../packages/" title="pip and friends: Packaging"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../">playdoh v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="documentation-with-sphinx">
+<span id="docs"></span><h1>Documentation with Sphinx<a class="headerlink" href="#documentation-with-sphinx" title="Permalink to this headline">¶</a></h1>
+<p><em>(Borrowed from Zamboni)</em></p>
+<p>For a reStructuredText Primer, see <a class="reference external" href="http://sphinx.pocoo.org/rest.html">http://sphinx.pocoo.org/rest.html</a>.</p>
+<div class="section" id="sections">
+<h2>Sections<a class="headerlink" href="#sections" title="Permalink to this headline">¶</a></h2>
+<p>Sphinx doesn&#8217;t care what punctuation you use for marking headings, but each new
+kind that it sees means one level lower in the outline.  So,</p>
+<div class="highlight-python"><pre>=========
+Heading 1
+=========
+
+Heading 2
+---------</pre>
+</div>
+<p>will correspond to</p>
+<div class="highlight-python"><pre>&lt;h1&gt;Heading 1&lt;/h1&gt;
+&lt;h2&gt;Heading 2&lt;/h2&gt;</pre>
+</div>
+<p>For consistency, this is what I&#8217;m using for headings in Zamboni:</p>
+<div class="highlight-python"><pre>=========
+Heading 1
+=========
+
+Heading 2
+---------
+
+Heading 3
+~~~~~~~~~
+
+Heading 4
+*********
+
+Heading 5
++++++++++
+
+Heading 6
+^^^^^^^^^</pre>
+</div>
+<p>Use two newlines prior to a new heading.  I&#8217;m only using one here for space
+efficiency.</p>
+</div>
+<div class="section" id="sphinx-extras">
+<h2>Sphinx Extras<a class="headerlink" href="#sphinx-extras" title="Permalink to this headline">¶</a></h2>
+<p>Use <tt class="docutils literal"><span class="pre">:src:`path/to/file.py`</span></tt> to link to source files online.  Example:
+<a href="#id1"><span class="problematic" id="id2">:src:`settings.py`</span></a>.</p>
+</div>
+<div class="section" id="vim">
+<h2>Vim<a class="headerlink" href="#vim" title="Permalink to this headline">¶</a></h2>
+<p>Here&#8217;s a nice macro for creating headings:</p>
+<div class="highlight-python"><pre>let @h = "yypVr"</pre>
+</div>
+</div>
+<div class="section" id="compiling-documentation">
+<h2>Compiling Documentation<a class="headerlink" href="#compiling-documentation" title="Permalink to this headline">¶</a></h2>
+<p>Playdoh hosts its documentation on <a class="reference external" href="http://mozilla.github.com/playdoh/">github pages</a>. When you change the docs, make sure
+they still build properly and look all right locally:</p>
+<div class="highlight-python"><pre>cd docs &amp;&amp; make html &amp;&amp; open _build/html/index.html</pre>
+</div>
+<p>If they do, run a build and push it to gh-pages:</p>
+<div class="highlight-python"><pre>./build-github.zsh</pre>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Documentation with Sphinx</a><ul>
+<li><a class="reference internal" href="#sections">Sections</a></li>
+<li><a class="reference internal" href="#sphinx-extras">Sphinx Extras</a></li>
+<li><a class="reference internal" href="#vim">Vim</a></li>
+<li><a class="reference internal" href="#compiling-documentation">Compiling Documentation</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../packages/"
+                        title="previous chapter">pip and friends: Packaging</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../bestpractices/"
+                        title="next chapter">Best Practices</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/docs.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search/" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../bestpractices/" title="Best Practices"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../packages/" title="pip and friends: Packaging"
+             >previous</a> |</li>
+        <li><a href="../">playdoh v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Mozilla.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
