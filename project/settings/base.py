@@ -19,6 +19,12 @@ INSTALLED_APPS = list(INSTALLED_APPS) + [
     '%s.examples' % PROJECT_MODULE,
 ]
 
+# Note! If you intend to add `south` to INSTALLED_APPS,
+# make sure it comes BEFORE `django_nose`.
+#INSTALLED_APPS.remove('django_nose')
+#INSTALLED_APPS.append('django_nose')
+
+
 LOCALE_PATHS = (
     os.path.join(ROOT, PROJECT_MODULE, 'locale'),
 )
