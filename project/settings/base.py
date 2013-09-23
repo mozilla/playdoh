@@ -31,25 +31,26 @@ LOCALE_PATHS = (
 
 # Because Jinja2 is the default template loader, add any non-Jinja templated
 # apps here:
-JINGO_EXCLUDE_APPS = [
+JINGO_EXCLUDE_APPS = (
     'admin',
     'registration',
-]
+    'browserid',
+)
 
 # BrowserID configuration
-AUTHENTICATION_BACKENDS = [
-    'django_browserid.auth.BrowserIDBackend',
+AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-]
+    'django_browserid.auth.BrowserIDBackend',
+)
 
-SITE_URL = 'http://127.0.0.1:8000'
+SITE_URL = 'http://localhost:8000'
 LOGIN_URL = '/'
-LOGIN_REDIRECT_URL = 'examples.home'
-LOGIN_REDIRECT_URL_FAILURE = 'examples.home'
+LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL_FAILURE = '/'
 
-TEMPLATE_CONTEXT_PROCESSORS = list(TEMPLATE_CONTEXT_PROCESSORS) + [
-    'django_browserid.context_processors.browserid_form',
-]
+TEMPLATE_CONTEXT_PROCESSORS += (
+    'django_browserid.context_processors.browserid',
+)
 
 # Should robots.txt deny everything or disallow a calculated list of URLs we
 # don't want to be crawled?  Default is false, disallow everything.
@@ -83,4 +84,15 @@ DOMAIN_METHODS['messages'] = [
 #    ('media/js/**.js', 'javascript'),
 # ]
 
-LOGGING = dict(loggers=dict(playdoh = {'level': logging.DEBUG}))
+LOGGING = {
+    'loggers': {
+        'playdoh': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+        'django_browserid': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        }
+    }
+}

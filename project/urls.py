@@ -14,9 +14,10 @@ patch()
 urlpatterns = patterns('',
     # Example:
     (r'', include(urls)),
-    
+    (r'^browserid/', include('django_browserid.urls')),
+
     # Generate a robots.txt
-    (r'^robots\.txt$', 
+    (r'^robots\.txt$',
         lambda r: HttpResponse(
             "User-agent: *\n%s: /" % 'Allow' if settings.ENGAGE_ROBOTS else 'Disallow' ,
             mimetype="text/plain"

@@ -1,19 +1,17 @@
 {% extends "example_base.html" %}
 
 {% block content %}
+{{ browserid_info() }}
+
 <h1>
     <a href="/">{{ _('Hello world') }}</a>
 </h1>
 
 {% if request.user.is_active %}
-    <p>{{ _('You are logged in as {username}')|f(username=request.user) }}.
-    <a href="{{ url('examples.logout') }}">{{ _('Log out') }}</a></p>
+    <p>{{ _('You are logged in as {username}')|f(username=request.user) }}.</p>
+    {{ browserid_logout(text='Logout') }}
 {% else %}
-    <p><a id="browserid" href="#">{{ _('Log in with BrowserID') }}</a></p>
-    <form method="POST" action="{{ url('browserid_verify') }}">
-        {{ csrf() }}
-        {{ browserid_form.as_p() }}
-    </form>
+    {{ browserid_login(text='Login', color='dark') }}
 {% endif %}
 
 {# L10n: This is a localizer comment #}
@@ -40,12 +38,6 @@
 </ul>
 {% endblock %}
 {% block site_js %}
-    {% compress js %}
-    <script src="{{ static('examples/js/libs/jquery-1.4.4.min.js') }}"></script>
-    <script src="{{ static('examples/js/libs/jquery.cookie.js') }}"></script>
-    <script src="{{ static('examples/js/init.js') }}"></script>
-    {% endcompress %}
-    {% if not request.user.is_active %}
-        {{ browserid_form.media }}
-    {% endif %}
+    {{ super() }}
+    {{ browserid_js() }}
 {% endblock %}
