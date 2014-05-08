@@ -43,13 +43,12 @@ AUTHENTICATION_BACKENDS = (
     'django_browserid.auth.BrowserIDBackend',
 )
 
-SITE_URL = 'http://localhost:8000'
 LOGIN_URL = '/'
 LOGIN_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL_FAILURE = '/'
 
 TEMPLATE_CONTEXT_PROCESSORS += (
-    'django_browserid.context_processors.browserid',
+    # other possible context processors here...
 )
 
 # Should robots.txt deny everything or disallow a calculated list of URLs we
