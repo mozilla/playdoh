@@ -1,0 +1,16 @@
+{
+    "name": "Playdoh",
+    "description": "A web application template based on Django.",
+    "repository": {
+        "url": "https://github.com/mozilla/playdoh",
+        "license": "BSD 3-Clause"
+    },
+    "bugs": {
+        "list": "https://github.com/mozilla/playdoh/issues",
+        "report": "https://github.com/mozilla/playdoh/issues/new"
+    },
+    "keywords": [
+        "django",
+        "python"
+    ]
+}
