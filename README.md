@@ -1,18 +1,13 @@
-playdoh
-=======
+Use [sugardough][] instead!
+===========================
 
-Mozilla's Playdoh is a web application template based on [Django][django].
+_playdoh_ is Mozilla's old Django app template, but it has been replaced by [sugardough][], which you should use instead.
 
-Patches are welcome! Feel free to fork and contribute to this project on
-[github][gh-playdoh].
-
-Full [documentation][docs] is available as well.
-
+The [old documentation][docs] for playdog is available if you need it.
 
 [django]: http://www.djangoproject.com/
-[gh-playdoh]: https://github.com/mozilla/playdoh
+[sugardough]: https://github.com/mozilla/sugardough/
 [docs]: http://playdoh.rtfd.org/
-
 
 License
 -------
@@ -20,4 +15,3 @@ This software is licensed under the [New BSD License][BSD]. For more
 information, read the file ``LICENSE``.
 
 [BSD]: http://creativecommons.org/licenses/BSD/
-
