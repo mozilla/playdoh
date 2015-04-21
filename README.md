@@ -3,7 +3,7 @@ Use [sugardough][] instead!
 
 _playdoh_ is Mozilla's old Django app template, but it has been replaced by [sugardough][], which you should use instead.
 
-The [old documentation][docs] for playdog is available if you need it.
+The [old documentation][docs] for playdoh is available if you need it.
 
 [django]: http://www.djangoproject.com/
 [sugardough]: https://github.com/mozilla/sugardough/
